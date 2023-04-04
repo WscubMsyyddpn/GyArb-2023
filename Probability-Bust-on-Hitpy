@@ -42,13 +42,10 @@ for x in range(20):
 data.insert(0, ["11 or lower", 0])
 
 
-
-
 #RITAR TABELL
 table = ax.table(cellText=data, colLabels=column, loc="center", cellLoc="center", colColours=topRowColour, colWidths=[0.4,0.4], cellColours=color)
 table.set_fontsize(20)
 table.scale(1,2)
 table.auto_set_column_width(col=list(range(len(column))))
 
-plt.savefig("probability to bust on start hand")
 plt.show()
