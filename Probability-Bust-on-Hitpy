@@ -1,6 +1,3 @@
-#TABELL SOM ÖVERSTÄMMER
-#https://debitcardcasino.ca/2019/01/11/dealer-bust-rate-blackjack/
-
 import matplotlib.pyplot as plt
 
 #KORTVÄRDEN I EN KORTLEK
