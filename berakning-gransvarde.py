@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 # KORTLEK
 deck = [
 # 2  3  4  5  6  7  8  9  10  J   Q   K   A
-	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
-	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
-	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
-	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11
-	]
+  2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
+  2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
+  2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
+  2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11
+]
 # ANTAL SPEL
 numGames = 10000
 # ANTAL VARV (1 varv motsvarat ett gränsvärde)
@@ -46,7 +46,7 @@ dictFO = {
 
 # blandar kortlek
 def deckShuffle():
-	stdDeck = [
+    stdDeck = [
 	# 2  3  4  5  6  7  8  9  10  J   Q   K   A
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
@@ -129,8 +129,7 @@ def cardCountingGame():
 				playerHand.append(deck.pop(0))
 				if sum(playerHand) > twentyone:
 					if ace in playerHand:
-						playerHand = soft(playerHand)
-						
+						playerHand = soft(playerHand)				
 			else:
 				break
 			
@@ -180,8 +179,7 @@ def noCardCountingGame():
 				playerHand.append(hit())
 				if sum(playerHand) > twentyone:
 					if ace in playerHand:
-						playerHand = soft(playerHand)
-						
+						playerHand = soft(playerHand)		
 			else:
 				break
 	
