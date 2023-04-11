@@ -214,7 +214,7 @@ def main():
 	
 	cc = False # card count (True = på) (False = av)
 
-  # STARTTID
+  	# STARTTID
 	t1 = dt.datetime.now()
 
 
@@ -222,7 +222,7 @@ def main():
 		pResult = [] # spelarens resultat lagras
 		dResult = [] # dealerns resultat lagras
 
-    # blandar kortleken
+    		# blandar kortleken
 		if cc == True:
 			deck = deckShuffle()
 
@@ -236,26 +236,24 @@ def main():
 			pResult.append(player)
 			dResult.append(dealer)
 
-      # antalet vinster, oavgjort, förluster
+      			# antalet vinster, oavgjort, förluster
 			win, draw, loss = result(pResult, dResult)
 
-      # blandar om kortleken
+      			# blandar om kortleken
 			if cc == True:
 				if (float(len(deck)) / (52 * numDeck)) * 100 < reshuffleIndex:
 					deck = deckShuffle()
 		
-    # beräknar och lagrar andelen vinster
+    		# beräknar och lagrar andelen vinster
 		winProcent = ((win/numGames) * 100)
 		winProcentList.append(winProcent)
 
-    # nollställer antalet vinster för nästa gränsvärde
+    		# nollställer antalet vinster för nästa gränsvärde
 		winCount = 0
 		# minskar gränsvärdet med en procentenhet
 		gransvarde -= 1
 
-
-
-		# avgör vilket gränsvärde gav flest andel vinster
+	# avgör vilket gränsvärde gav flest andel vinster
 	maxElement = max(winProcentList)
 	maxIndex = winProcentList.index(maxElement)
 
