@@ -46,7 +46,7 @@ dictFO = {
 
 # blandar kortlek
 def deckShuffle():
-    stdDeck = [
+	stdDeck = [
 	# 2  3  4  5  6  7  8  9  10  J   Q   K   A
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
@@ -104,19 +104,19 @@ def cardCountingGame():
 	playerHand = []
 	dealerHand = []
 
-  # kort delas ut till spelaren och dealern
+ 	 # kort delas ut till spelaren och dealern
 	playerHand.append(deck.pop(0))
 	dealerHand.append(deck.pop(0))
 	playerHand.append(deck.pop(0))
 	dealerHand.append(deck.pop(0))
 
-  # spelarens drag
+  	# spelarens drag
 	def playerActionCC(playerHand):
 		while sum(playerHand) <= twentyone:
 			while sum(playerHand) <= 10:
 				playerHand.append(deck.pop(0))
 			
-      # beräknar sannolikheten att INTE gå bust
+      		# beräknar sannolikheten att INTE gå bust
 			n = deck.count(11)
 			for card in range(2, (twentyone - sum(playerHand) + 1)):
 				n += deck.count(card)
@@ -124,7 +124,7 @@ def cardCountingGame():
 			fo = comb(n, 1)
 			pHit = (fo/po)
 
-      # jämfört sannolikheten med gränsvärde och fattar ett beslut
+     		# jämfört sannolikheten med gränsvärde och fattar ett beslut
 			if (pHit * 100) >= gransvarde:
 				playerHand.append(deck.pop(0))
 				if sum(playerHand) > twentyone:
@@ -135,7 +135,7 @@ def cardCountingGame():
 			
 		return sum(playerHand)
 
-  # dealerns drag
+  	# dealerns drag
 	def dealerActionCC(dealerHand):
 		if sum(dealerHand) <= 17:
 			while (sum(dealerHand) < 17) or (sum(dealerHand) == 17 and ace in dealerHand):
@@ -162,19 +162,19 @@ def noCardCountingGame():
 	playerHand.append(hit())
 	dealerHand.append(hit())
 
-  # spelarens drag
+  	# spelarens drag
 	def playerAction(playerHand):
 		while sum(playerHand) <= twentyone:
 			while sum(playerHand) <= 10:
 				playerHand.append(hit())
 			
-      # beräknar sannolikheten att INTE gå bust
+      		# beräknar sannolikheten att INTE gå bust
 			n = dictFO[sum(playerHand)]
 			po = comb(len(deck), 1)
 			fo = comb(n, 1)
 			pHit = (fo/po)
 
-      # jämfört sannolikheten med gränsvärde och fattar ett beslut
+      		# jämfört sannolikheten med gränsvärde och fattar ett beslut
 			if (pHit * 100) >= gransvarde:
 				playerHand.append(hit())
 				if sum(playerHand) > twentyone:
@@ -186,7 +186,7 @@ def noCardCountingGame():
 		return sum(playerHand)
 
 
-  # dealerns drag
+  	# dealerns drag
 	def dealerAction(dealerHand):
 		if sum(dealerHand) <= 17:
 			while (sum(dealerHand) < 17) or (sum(dealerHand) == 17 and ace in dealerHand):
@@ -222,7 +222,7 @@ def main():
 		pResult = [] # spelarens resultat lagras
 		dResult = [] # dealerns resultat lagras
 
-    		# blandar kortleken
+    	# blandar kortleken
 		if cc == True:
 			deck = deckShuffle()
 
@@ -236,19 +236,19 @@ def main():
 			pResult.append(player)
 			dResult.append(dealer)
 
-      			# antalet vinster, oavgjort, förluster
+      		# antalet vinster, oavgjort, förluster
 			win, draw, loss = result(pResult, dResult)
 
-      			# blandar om kortleken
+      		# blandar om kortleken
 			if cc == True:
 				if (float(len(deck)) / (52 * numDeck)) * 100 < reshuffleIndex:
 					deck = deckShuffle()
 		
-    		# beräknar och lagrar andelen vinster
+    	# beräknar och lagrar andelen vinster
 		winProcent = ((win/numGames) * 100)
 		winProcentList.append(winProcent)
 
-    		# nollställer antalet vinster för nästa gränsvärde
+    	# nollställer antalet vinster för nästa gränsvärde
 		winCount = 0
 		# minskar gränsvärdet med en procentenhet
 		gransvarde -= 1
