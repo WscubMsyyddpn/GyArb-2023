@@ -1,286 +1,183 @@
-import random as r
-from math import comb, ceil
+import random
+from math import comb
 import datetime as dt
 import matplotlib.pyplot as plt
 
 # KORTLEK
 deck = [
 # 2  3  4  5  6  7  8  9  10  J   Q   K   A
-  2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
-  2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
-  2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
-  2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11
-]
-# ANTAL SPEL
-numGames = 10000
-# ANTAL VARV (1 varv motsvarat ett gränsvärde)
-numTurns = 100
-# ANTAL KORTLEKAR
-numDeck = 4
-# GRÄNSVÄRDE I PROCENT
-gransvarde = 100
-# HANDVÄRDe 21
-twentyone = 21
-# ESS
-ace = 11
-# WHEN TO RESHUFFLE
-reshuffleIndex = 70
-# RESULTAT
-winCount = 0; drawCount = 0; lossCount = 0
-#SKAPA GRAF
-fig, ax = plt.subplots()
-# värde av kort för att avgöra en viss hands gynnsamma utfall, gäller när cc = False
-dictFO = {
-# värde:  n
-   11  :  52,
-   12  :  36,
-   13  :  32,
-   14  :  24,
-   16  :  20,
-   17  :  16,
-   18  :  12,
-   19  :  8,
-   20  :  4,
-   21  :  0
-}
-
-# blandar kortlek
-def deckShuffle():
-	stdDeck = [
-	# 2  3  4  5  6  7  8  9  10  J   Q   K   A
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11,
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11
 	]
-	stdDeck *= numDeck
+# ANTAL SPEL
+num_games = 1000
+# ANTAL VARV (1 varv motsvarat ett gränsvärde)
+num_turns = 100
+# GRÄNSVÄRDE I PROCENT
+gransvarde = 0
+# HAND VÄRD 21
+twentyone = 21
+# ESS
+ace = 11
+# RESULTAT
+win_count = 0; draw_count = 0; loss_count = 0
+#SKAPA GRAF
+fig, ax = plt.subplots()
+# värde av kort för att avgöra en viss hands gynnsamma utfall, gäller när cc = False
+dict_FO = {
+# värde:  n
+	 11  :  52,
+	 12  :  36,
+	 13  :  32,
+	 14  :  28,
+	 15  :  24,
+	 16  :  20,
+	 17  :  16,
+	 18  :  12,
+	 19  :  8,
+	 20  :  4,
+	 21  :  0
+}
 
-	r.shuffle(stdDeck)
-
-	return stdDeck[:]
-
-# tar ett "slumpmässigt" kort
 def hit():
-	cardHit = deck[r.choice(deck)]
-	return cardHit
+	card_hit = deck[random.choice(deck)]
+	return card_hit
 
-# hanterar händer med ess
 def soft(hand):
-	ifSoft = True
+	if_soft = True
 	if sum(hand) >= 17:
-		while ifSoft == True:
-			for a in range(len(hand)):
-				if hand[a] == 11:
-					hand[a] = 1
-					ifSoft = False
+		while if_soft == True:
+			for element in range(len(hand)):
+				if hand[element] == 11:
+					hand[element] = 1
+					if_soft = False
 					break
 				else:
-					ifSoft = False
+					if_soft = False
 	
 	return hand
 
-# beräknar utfallet från en runda Blackjack
-def result(pResult,dResult):
-	global winCount
-	global drawCount
-	global lossCount
 
+def result(pResult,dResult):
+	global win_count
+	global draw_count
+	global loss_count
 
 	p = int(pResult[-1])
 	d = int(dResult[-1])
 
-	if p > d and p <= twentyone or d > twentyone and p <= twentyone:
-		winCount += 1
+	if (p > d and p <= twentyone) or (d > twentyone and p <= twentyone):
+		win_count += 1
 	elif p == d and p <= twentyone:
-		drawCount += 1
+		draw_count += 1
 	elif p > twentyone or p < d:
-		lossCount += 1
+		loss_count += 1
 	
-	return winCount, drawCount, lossCount
+	return win_count
+
+def blackjack_simulation():
+	player_hand = []
+	dealer_hand = []
+	
+	# kort delas ut till spelaren och dealern
+	player_hand.append(hit())
+	dealer_hand.append(hit())
+	player_hand.append(hit())
+	dealer_hand.append(hit())
 
 
-# räkning av kort
-def cardCountingGame():
-	playerHand = []
-	dealerHand = []
-
- 	 # kort delas ut till spelaren och dealern
-	playerHand.append(deck.pop(0))
-	dealerHand.append(deck.pop(0))
-	playerHand.append(deck.pop(0))
-	dealerHand.append(deck.pop(0))
-
-  	# spelarens drag
-	def playerActionCC(playerHand):
-		while sum(playerHand) <= twentyone:
-			while sum(playerHand) <= 10:
-				playerHand.append(deck.pop(0))
-			
-      		# beräknar sannolikheten att INTE gå bust
-			n = deck.count(11)
-			for card in range(2, (twentyone - sum(playerHand) + 1)):
-				n += deck.count(card)
-			po = comb(len(deck), 1)
-			fo = comb(n, 1)
-			pHit = (fo/po)
-
-     		# jämfört sannolikheten med gränsvärde och fattar ett beslut
-			if (pHit * 100) >= gransvarde:
-				playerHand.append(deck.pop(0))
-				if sum(playerHand) > twentyone:
-					if ace in playerHand:
-						playerHand = soft(playerHand)				
-			else:
-				break
-			
-		return sum(playerHand)
-
-  	# dealerns drag
-	def dealerActionCC(dealerHand):
-		if sum(dealerHand) <= 17:
-			while (sum(dealerHand) < 17) or (sum(dealerHand) == 17 and ace in dealerHand):
-				dealerHand.append(deck.pop(0))
-				if ace in dealerHand:
-					dealerHand = soft(dealerHand)
+	def player_action(player_hand):
 		
-		return sum(dealerHand)
-
-	pGameCC = playerActionCC(playerHand)
-	dGameCC = dealerActionCC(dealerHand)
-
-	return pGameCC, dGameCC
-
-
-# ej räkning av kort
-def noCardCountingGame():
-	playerHand = []
-	dealerHand = []
-	
-  # kort delas ut till spelaren och dealern
-	playerHand.append(hit())
-	dealerHand.append(hit())
-	playerHand.append(hit())
-	dealerHand.append(hit())
-
-  	# spelarens drag
-	def playerAction(playerHand):
-		while sum(playerHand) <= twentyone:
-			while sum(playerHand) <= 10:
-				playerHand.append(hit())
+		while sum(player_hand) <= twentyone:
+			while sum(player_hand) <= 10:
+				player_hand.append(hit())
 			
-      		# beräknar sannolikheten att INTE gå bust
-			n = dictFO[sum(playerHand)]
-			po = comb(len(deck), 1)
-			fo = comb(n, 1)
-			pHit = (fo/po)
+			favourable_outcomes = comb(dict_FO[sum(player_hand)], 1)
+			possible_outcomes = comb(len(deck), 1)
+			p_no_bust = favourable_outcomes/possible_outcomes
 
-      		# jämfört sannolikheten med gränsvärde och fattar ett beslut
-			if (pHit * 100) >= gransvarde:
-				playerHand.append(hit())
-				if sum(playerHand) > twentyone:
-					if ace in playerHand:
-						playerHand = soft(playerHand)		
+			if p_no_bust * 100 >= gransvarde:
+				player_hand.append(hit())
+				if sum(player_hand) > twentyone:
+					if ace in player_hand and sum(player_hand) <= 17:
+						player_hand = soft(player_hand)
+			
 			else:
 				break
-	
-		return sum(playerHand)
+		
+		return sum(player_hand)
 
+	def dealer_action(dealer_hand):
+		if sum(dealer_hand) <= 17:
+			dealer_sum = sum(dealer_hand)
+			while dealer_sum < 17 or dealer_sum == 17 and ace in dealer_hand:
+				dealer_hand.append(hit())
+				if ace in dealer_hand:
+					dealer_hand = soft(dealer_hand)
+		
+		return sum(dealer_hand)
 
-  	# dealerns drag
-	def dealerAction(dealerHand):
-		if sum(dealerHand) <= 17:
-			while (sum(dealerHand) < 17) or (sum(dealerHand) == 17 and ace in dealerHand):
-				dealerHand.append(hit())
-				if ace in dealerHand:
-					dealerHand = soft(dealerHand)
-			
-		return sum(dealerHand)
-	
+	player_game = player_action(player_hand)
+	dealer_game = dealer_action(dealer_hand)
 
-	pGame = playerAction(playerHand)
-	dGame = dealerAction(dealerHand)
-
-	return pGame, dGame
+	return player_game, dealer_game
 
 
 def main():
-	# deklarera globala variabler
 	global gransvarde
-	global winCount
-	global cc
-	global deck
-
-	winProcentList = []
+	global win_count
 	
-	cc = False # card count (True = på) (False = av)
+	win_rates = []
 
-  	# STARTTID
+	# STARTTID
 	t1 = dt.datetime.now()
 
 
-	for repetition in range(numTurns):
-		pResult = [] # spelarens resultat lagras
-		dResult = [] # dealerns resultat lagras
+	for repetition in range(num_turns):
+		player_result = []
+		dealer_result = []
 
-    	# blandar kortleken
-		if cc == True:
-			deck = deckShuffle()
+		for iteration in range(num_games):
+			player, dealer = blackjack_simulation()
 
-		for iteration in range(numGames):
-			if cc == True:
-				player, dealer = cardCountingGame()
-			elif cc == False:
-				player, dealer = noCardCountingGame()
-			
+			player_result.append(player)
+			dealer_result.append(dealer)
 
-			pResult.append(player)
-			dResult.append(dealer)
+			win = result(player_result, dealer_result)
 
-      		# antalet vinster, oavgjort, förluster
-			win, draw, loss = result(pResult, dResult)
+		win_percent = ((win/num_games) * 100)
+		win_rates.append(win_percent)
 
-      		# blandar om kortleken
-			if cc == True:
-				if (float(len(deck)) / (52 * numDeck)) * 100 < reshuffleIndex:
-					deck = deckShuffle()
-		
-    	# beräknar och lagrar andelen vinster
-		winProcent = ((win/numGames) * 100)
-		winProcentList.append(winProcent)
+		win_count = 0
+		gransvarde += 1
 
-    	# nollställer antalet vinster för nästa gränsvärde
-		winCount = 0
-		# minskar gränsvärdet med en procentenhet
-		gransvarde -= 1
-
-	# avgör vilket gränsvärde gav flest andel vinster
-	maxElement = max(winProcentList)
-	maxIndex = winProcentList.index(maxElement)
+	max_rate = max(win_rates)
+	max_index = win_rates.index(max_rate) + 1
 
 	# GRAF DESIGN
-	barColour = [("green" if p == maxElement else "red") for p in winProcentList]
-	plt.title("GRÄNSVÄRDE")
-	plt.xlabel(f"RISKFAKTOR (100% --> 0 %)")
-	plt.ylabel("VINSTER I PROCENT")
+	bar_colour = [("red" if p == max_rate else "black") for p in win_rates]
+	plt.xlabel(f"GRÄNSVÄRDE")
+	plt.ylabel(f"ANDEL VINSTER")
 	
 	# RITA GRAF
-	plt.bar(range(numTurns), winProcentList, width = 0.4, color = barColour)
+	plt.bar(range(num_turns), win_rates, width=0.5, color=bar_colour)
+
 
 	# SLUTTID
 	t2 = dt.datetime.now()
-
+	
 	# PROGRAMTID
 	runtime = (t2-t1)
 
+	
 	#PRINT
-	print(f"Highest win procentage:", maxElement)
-	print(f"Index for highest win procentage:", (100 - (maxIndex)))
+	print(f"Highest win procentage:", max_rate)
+	print(f"Index for highest win procentage:", (max_index))
 	print(f"Runtime:", runtime)
-	print(f"Number of wins:", win)
-	print(f"Number of wins:", draw)
-	print(f"Number of wins:", loss)
 
-
+	
 	# VISA GRAF
 	plt.show()
 
