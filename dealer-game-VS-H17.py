@@ -1,20 +1,24 @@
-import random as r
+## använd gv från förra koden
+## en del som kör kort räkning, dvs, håller koll på varje kort som spelats och beräknar sannolikheten därifrån
+## en del som  kör utan korträkning som spelar som dealern eller att spelaren kör slumpmässigt eller utan att ta ett nytt kort.
+
+import random 
 from math import comb
 import datetime as dt
 import matplotlib.pyplot as plt
 
 # ANTAL SPEL
-num_games = 1_0
+num_games = 1_000_000_000
 # ANTAL KORTLEKAR
 num_decks = 8
 # GRÄNSVÄRDE I PROCENT
-gransvarde = 50
+gransvarde = 74
 # HAND VÄRD 21
 twentyone = 21
 # ESS
 ace = 11
 # NÄR KORTLEKEN BLANDAS
-reshuffle_index = 60
+reshuffle_index = 80
 # RESULTAT
 win_count = 0; draw_count = 0; loss_count = 0; blackjack_count = 0
 #SKAPA GRAF
@@ -48,7 +52,7 @@ def deck_shuffle():
   
   std_deck *= num_decks
 
-  r.shuffle(std_deck)
+  random.shuffle(std_deck)
 
   return std_deck[:]
 
@@ -120,15 +124,16 @@ def blackjack_simulation_card_counting():
 
   # DEALERN
   def dealer_action_card_counting(dealer_hand):
-    if sum(dealer_hand) <= 17:
-      dealer_sum = sum(dealer_hand)
-      while dealer_sum < 17 or dealer_sum == 17 and ace in dealer_hand:
+    while sum(dealer_hand) < 17:
         dealer_hand.append(deck.pop(0))
-        
-        # checkar om handen är soft
         if ace in dealer_hand:
           dealer_hand = soft(dealer_hand)
-    
+
+    if sum(dealer_hand) == 17 and ace in dealer_hand:
+      dealer_hand.append(deck.pop(0))
+      if ace in dealer_hand:
+        dealer_hand = soft(dealer_hand)
+
     return sum(dealer_hand)
 
   player_game = player_action_card_counting(player_hand)
@@ -156,28 +161,30 @@ def blackjack_simulation_H17():
 
   # SPELAREN
   def player_action_H17(player_hand):
-    if sum(player_hand) <= 17:
-      player = sum(player_hand)
-      while player_sum < 17 or player_sum == 17 and ace in dealer_hand:
+    while sum(player_hand) < 17:
         player_hand.append(deck.pop(0))
-
-        # checkar om handen är soft
         if ace in player_hand:
           player_hand = soft(player_hand)
-    
+
+    if sum(player_hand) == 17 and ace in player_hand:
+      player_hand.append(deck.pop(0))
+      if ace in player_hand:
+        player_hand = soft(player_hand)
+
     return sum(player_hand)
 
   # DEALERN
   def dealer_action_H17(dealer_hand):
-    if sum(dealer_hand) <= 17:
-      dealer_sum = sum(dealer_hand)
-      while dealer_sum < 17 or dealer_sum == 17 and ace in dealer_hand:
+    while sum(dealer_hand) < 17:
         dealer_hand.append(deck.pop(0))
-
-        # checkar om handen är soft
         if ace in dealer_hand:
           dealer_hand = soft(dealer_hand)
-    
+
+    if sum(dealer_hand) == 17 and ace in dealer_hand:
+      dealer_hand.append(deck.pop(0))
+      if ace in dealer_hand:
+        dealer_hand = soft(dealer_hand)
+
     return sum(dealer_hand)
 
   player_game = player_action_H17(player_hand)
@@ -196,7 +203,7 @@ def main():
   game_result = []
 
 
-  switch = False # True (räknar kort), False (spelar som dealern (H17))
+  switch = True # True (räknar kort), False (spelar som dealern (H17))
 
   # STARTTID
   t1 = dt.datetime.now()
@@ -205,35 +212,39 @@ def main():
   deck = deck_shuffle()
 
   for iteration in range(num_games):
-
     if switch == True:
       player, dealer = blackjack_simulation_card_counting()
     elif switch == False:
       player, dealer = blackjack_simulation_H17()
+    
 
+    # blandar om kortleken
+    if len(deck) < reshuffle_index:
+      deck = deck_shuffle()
 
     player_result.append(player)
     dealer_result.append(dealer)
 
     win, draw, loss = result(player_result, dealer_result)
 
-    # blandar om kortleken
-    if len(deck) < reshuffle_index:
-      deck = deck_shuffle()
+    
+
 
   
-  win_procent = round(((win/num_games) * 100), 3)
-  draw_procent = round(((draw/num_games) * 100), 3)
-  loss_procent = round(((loss/num_games) * 100), 3)
+  win_procent = ((win/num_games) * 100)
+  draw_procent = ((draw/num_games) * 100)
+  loss_procent = ((loss/num_games) * 100)
 
   game_result.extend([win, draw, loss])
 
+
   # RITA GRAF
-  bar_colour = ["#000000","#000000","#000000"]
-  bar_label = ["WINS", "DRAWS", "LOSSES"]
-  bar_container = ax.bar(bar_label, game_result, width = 0.50, color = bar_colour)
-  ax.bar_label(bar_container, label_type = "center", color = '#ffffff')
-  ax.get_yaxis().set_visible(False)
+  bar_colour = ["#002000","#202020","#200000"]
+  bar_label = ["Wins", "Draws", "Losses"]
+  bar_container = ax.bar(bar_label, game_result, width = 0.75, color = bar_colour)
+  ax.bar_label(bar_container, label_type = "edge", color = "black")
+  ax.spines["top"].set_visible(False)
+  ax.spines["right"].set_visible(False)
   
   # SLUTTID
   t2 = dt.datetime.now()
@@ -250,20 +261,13 @@ def main():
 
 
   # SPARA GRAF
+
   if switch == True:
     plt.savefig("epic graph card counting")
   elif switch == False:
     plt.savefig("epic graph Player-H17")
-  
+
   # VISA GRAF
   plt.show()
 
 main()
-
-
-
-
-
-
-
-
