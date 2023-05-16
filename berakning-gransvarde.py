@@ -2,7 +2,7 @@
 
 import random
 from math import comb
-import datetime as dt
+import datetime
 import matplotlib.pyplot as plt
 
 
@@ -140,7 +140,7 @@ def main():
   win_rates = []
 
   # STARTTID
-  t1 = dt.datetime.now()
+  t1 = datetime.datetime.now()
 
 
   for repetition in range(num_turns):
@@ -166,7 +166,7 @@ def main():
 
   # GRAF DESIGN
   bar_colour = [("red" if p == max_rate else "black") for p in win_rates]
-  plt.xlabel(f"GRÄNSVÄRDE")
+  plt.xlabel(f"GRANSVARDE")
   plt.ylabel(f"ANDEL VINSTER")
   
   # RITA GRAF
@@ -174,7 +174,7 @@ def main():
 
 
   # SLUTTID
-  t2 = dt.datetime.now()
+  t2 = datetime.datetime.now()
 
   # PROGRAMTID
   runtime = (t2-t1)
