@@ -4,7 +4,7 @@
 
 import random 
 from math import comb
-import datetime as dt
+import datetime 
 import matplotlib.pyplot as plt
 
 # ANTAL SPEL
@@ -100,8 +100,8 @@ def blackjack_simulation_card_counting():
       
       # checkar hur många gynnsamma kort som finns i kortleken
       n = deck.count(ace)
-      upperLimit = twentyone - sum(player_hand)
-      for card in range(2, (upperLimit + 1)):
+      upper_limit = twentyone - sum(player_hand)
+      for card in range(2, (upper_limit + 1)):
         n += deck.count(card)
 
       # beräknar sannolikheten att inte gå bust vid hit
@@ -206,7 +206,7 @@ def main():
   switch = True # True (räknar kort), False (spelar som dealern (H17))
 
   # STARTTID
-  t1 = dt.datetime.now()
+  t1 = datetime.datetime.now()
 
   # blandar kortleken
   deck = deck_shuffle()
@@ -228,8 +228,6 @@ def main():
     win, draw, loss = result(player_result, dealer_result)
 
     
-
-
   
   win_procent = ((win/num_games) * 100)
   draw_procent = ((draw/num_games) * 100)
@@ -239,15 +237,15 @@ def main():
 
 
   # RITA GRAF
-  bar_colour = ["#002000","#202020","#200000"]
-  bar_label = ["Wins", "Draws", "Losses"]
+  bar_colour = ["#000000","#000000","#000000"]
+  bar_label = ["Vinster", "Oavgjort", "Förluster"]
   bar_container = ax.bar(bar_label, game_result, width = 0.75, color = bar_colour)
   ax.bar_label(bar_container, label_type = "edge", color = "black")
   ax.spines["top"].set_visible(False)
   ax.spines["right"].set_visible(False)
   
   # SLUTTID
-  t2 = dt.datetime.now()
+  t2 = datetime.datetime.now()
 
   # PROGRAMTID
   runtime = (t2-t1)
