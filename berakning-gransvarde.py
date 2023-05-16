@@ -1,4 +1,5 @@
 ## beräknar det terotetiska bästa sättet att spela med hjälp av sannolikheten. Spela igenom x antal spel på varje procent (0 till 100) och använd resultaten i nästkommande kod ##
+
 import random
 from math import comb
 import datetime as dt
@@ -114,16 +115,15 @@ def blackjack_simulation():
     return sum(player_hand)
 
   def dealer_action(dealer_hand):
-    if sum(dealer_hand) < 17:
+    while sum(dealer_hand) < 17:
         dealer_hand.append(hit())
         if ace in dealer_hand:
           dealer_hand = soft(dealer_hand)
 
-    else:
-      if sum(dealer_hand) == 17 and ace in dealer_hand:
-        dealer_hand.append(hit())
-        if ace in dealer_hand:
-          dealer_hand = soft(dealer_hand)
+    if sum(dealer_hand) == 17 and ace in dealer_hand:
+      dealer_hand.append(hit())
+      if ace in dealer_hand:
+        dealer_hand = soft(dealer_hand)
 
     return sum(dealer_hand)
 
@@ -170,7 +170,7 @@ def main():
   plt.ylabel(f"ANDEL VINSTER")
   
   # RITA GRAF
-  ax.bar(range(num_turns), win_rates, width=0.5, color=bar_colour)
+  ax.bar(range(num_turns), win_rates, width = 0.50, color = bar_colour)
 
 
   # SLUTTID
@@ -189,3 +189,5 @@ def main():
   plt.show()
 
 main()
+
+
